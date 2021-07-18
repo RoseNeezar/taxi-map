@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { QueryClientProvider } from "react-query";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import MapPage from "./pageComponent/Map/MapPage";
+import NotFound from "./pageComponent/NotFound/NotFound";
 import { queryClient } from "./store/queryClient";
 
 const SafeHydrate: FC = ({ children }) => {
@@ -22,6 +23,7 @@ const MainPage = () => {
               <>
                 <Switch>
                   <Route exact path="/" component={MapPage} />
+                  <Route path="*" component={NotFound} />
                 </Switch>
               </>
             )}
