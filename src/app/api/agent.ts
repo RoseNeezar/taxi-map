@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { IFetchDriverDto } from "../../utils/type";
+import { IFetchDriver, IFetchDriverDto } from "../utils/type";
 
 const instance = axios.create({
   withCredentials: false,
@@ -18,7 +18,8 @@ const requests = {
 };
 
 const TaxiService = {
-  fetchTaxi: (data: IFetchDriverDto) => requests.get<any>(`driver`, data),
+  fetchTaxi: (data: IFetchDriverDto) =>
+    requests.get<IFetchDriver>(`/api/drivers`, data),
 };
 
 const agent = {
