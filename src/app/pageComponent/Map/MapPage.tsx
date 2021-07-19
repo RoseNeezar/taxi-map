@@ -24,6 +24,7 @@ const MapPage: FC = () => {
     googleMapsApiKey: String(process.env.NEXT_PUBLIC_GOOGLE_MAPS_TOKEN),
   });
   const {
+    selectFn,
     mapRef,
     onMapLoad,
     selected,
@@ -140,7 +141,7 @@ const MapPage: FC = () => {
           }}
         />
         {!isLoading &&
-          driverList?.drivers.map((res) => (
+          selectFn().drivers?.map((res) => (
             <Marker
               position={{
                 lat: res.location.latitude,

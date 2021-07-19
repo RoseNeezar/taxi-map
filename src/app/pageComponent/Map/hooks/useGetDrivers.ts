@@ -63,10 +63,10 @@ export const useGetDrivers = () => {
     error: driverError,
     refetch,
   } = useQuery<IFetchDriver>(
-    ["drivers", slider, switchOfficeSG, switchOfficeUK],
+    ["drivers", switchOfficeSG, switchOfficeUK],
     async () =>
       await agent.TaxiService.fetchTaxi({
-        count: slider,
+        count: 15,
         latitude: Number(mapRef.current?.getCenter().toJSON().lat),
         longitude: Number(mapRef.current?.getCenter().toJSON().lng),
       }),
@@ -75,7 +75,17 @@ export const useGetDrivers = () => {
       enabled: !loadingLocation && !!viewport,
     }
   );
+
+  const selectFn = useCallback(() => {
+    const taxiNum = driverList?.drivers.slice(0, slider).map((re) => re);
+    return {
+      ...driverList,
+      drivers: taxiNum,
+    };
+  }, [slider, driverList]);
+
   return {
+    selectFn,
     mapRef,
     onMapLoad,
     viewport,
