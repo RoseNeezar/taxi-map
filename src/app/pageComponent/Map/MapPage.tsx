@@ -25,6 +25,8 @@ const MapPage: FC = () => {
     googleMapsApiKey: String(process.env.NEXT_PUBLIC_GOOGLE_MAPS_TOKEN),
   });
   const {
+    mapRef,
+    onMapLoad,
     selected,
     setSelected,
     setCurrentLocation,
@@ -57,16 +59,26 @@ const MapPage: FC = () => {
           lat: nearest.latitude,
           lng: nearest.longitude,
         }));
+        mapRef.current?.setCenter({
+          lat: nearest.latitude,
+          lng: nearest.longitude,
+        });
         setLoadingLocation(false);
       },
       () => Navigate?.push("/error")
     );
   }, []);
+  if (driverError || loadError || !isLoaded || loadingLocation) {
+    if (driverError) {
+      Navigate?.push("/error");
+    }
+    if (loadError) {
+      Navigate?.push("/error");
+    }
+    if (!isLoaded) return <LoadingPage />;
+    if (loadingLocation) return <LoadingPage />;
+  }
 
-  if (driverError) return <ErrorPage />;
-  if (loadError) return <ErrorPage />;
-  if (!isLoaded) return <LoadingPage />;
-  if (loadingLocation) return <LoadingPage />;
   return (
     <>
       <Head>
@@ -85,6 +97,7 @@ const MapPage: FC = () => {
         zoom={15}
         center={viewport as ILocation}
         options={options}
+        onLoad={onMapLoad}
       >
         <Marker
           position={{
