@@ -83,19 +83,19 @@ export const useGetDrivers = () => {
     const sortDistance = driverList?.drivers.sort(
       (a, b) =>
         distanceCalculation(
-          Number(currentLocation.lat),
-          Number(currentLocation.lng),
+          Number(mapRef.current?.getCenter().toJSON().lat),
+          Number(mapRef.current?.getCenter().toJSON().lng),
           a.location.latitude,
           a.location.longitude
         ) -
         distanceCalculation(
-          Number(currentLocation.lat),
-          Number(currentLocation.lng),
+          Number(mapRef.current?.getCenter().toJSON().lat),
+          Number(mapRef.current?.getCenter().toJSON().lng),
           b.location.latitude,
           b.location.longitude
         )
     );
-    const taxiNum = sortDistance?.slice(0, slider).map((re: any) => re);
+    const taxiNum = sortDistance?.slice(0, slider).map((re) => re);
     return {
       ...driverList,
       drivers: taxiNum,
