@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useQuery } from "react-query";
 import agent from "../../../api/agent";
 import { nearestOfficeLocation } from "../../../utils/nearestOffice";
@@ -20,53 +20,64 @@ export const useGetDrivers = () => {
   const [slider, setSlider] = useState(1);
   const [selected, setSelected] = useState<any>(null);
 
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
+
   const switchOfficeUK = useCallback(() => {
     setSelected(null);
-    setViewport((prev) => ({
-      ...prev,
+    mapRef.current?.setCenter({
       lat: officeLocation[1].latitude,
       lng: officeLocation[1].longitude,
-    }));
+    });
+    refetch();
   }, []);
+
   const switchOfficeSG = useCallback(() => {
     setSelected(null);
-    setViewport((prev) => ({
-      ...prev,
+    mapRef.current?.setCenter({
       lat: officeLocation[0].latitude,
       lng: officeLocation[0].longitude,
-    }));
+    });
+    refetch();
   }, []);
+
   const switcNearestLocation = useCallback(() => {
     setSelected(null);
     const nearest = nearestOfficeLocation(
       currentLocation.lat!,
       currentLocation.lng!
     );
-    setViewport((prev) => ({
-      ...prev,
+
+    mapRef.current?.setCenter({
       lat: nearest.latitude,
       lng: nearest.longitude,
-    }));
-  }, [nearestOfficeLocation]);
+    });
+    refetch();
+  }, []);
 
   const {
     data: driverList,
     isLoading,
     error: driverError,
+    refetch,
   } = useQuery<IFetchDriver>(
     ["drivers", slider, switchOfficeSG, switchOfficeUK],
     async () =>
       await agent.TaxiService.fetchTaxi({
         count: slider,
-        latitude: Number(viewport.lat),
-        longitude: Number(viewport.lng),
+        latitude: Number(mapRef.current?.getCenter().toJSON().lat),
+        longitude: Number(mapRef.current?.getCenter().toJSON().lng),
       }),
     {
       refetchInterval: 10000, //refetch every 10s
-      enabled: !loadingLocation,
+      enabled: !loadingLocation && !!viewport,
     }
   );
   return {
+    mapRef,
+    onMapLoad,
     viewport,
     setViewport,
     loadingLocation,
