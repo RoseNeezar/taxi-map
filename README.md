@@ -3,7 +3,7 @@
 Taxi application that shows the closest taxi location to the nearest Splyt office to the user’s
 current location.
 
-![taxi-app-demo](https://github.com/RoseNeezar/kanban-app/blob/master/demo.gif)
+![taxi-app-demo](https://github.com/RoseNeezar/taxi-map/blob/main/demo.gif)
 
 ## Features
 
