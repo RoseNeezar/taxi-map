@@ -11,9 +11,8 @@ import { mapContainerStyle, options } from "../../utils/googleMapsUtil";
 import Navigate from "../../utils/Navigate";
 import { nearestOfficeLocation } from "../../utils/nearestOffice";
 import { officeLocation } from "../../utils/officeLocation";
-import ErrorPage from "../ErrorPage/ErrorPage";
-import { useGetDrivers } from "./hooks/useGetDrivers";
 import MapActionsBanner from "./component/MapActionsBanner";
+import { useGetDrivers } from "./hooks/useGetDrivers";
 
 interface ILocation {
   lat: number;
