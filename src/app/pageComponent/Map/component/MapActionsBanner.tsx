@@ -16,17 +16,17 @@ const MapActionsBanner: FC<IMapActionsBanner> = ({
   switchOfficeUK,
 }) => {
   return (
-    <div className=" flex flex-row absolute top-10 left-0 z-20   w-full  justify-center">
-      <div className=" flex flex-row  w-96 bg-gray-500 p-3 rounded-xl">
+    <div className="absolute left-0 z-20 flex flex-row justify-center w-full  top-10">
+      <div className="flex flex-row p-3 bg-gray-500  w-96 rounded-xl">
         <input
           type="range"
           min="1"
-          max="10"
+          max="15"
           defaultValue="1"
           onChange={(e) => setSlider(Number(e.target.value))}
-          className="w-full h-10 mr-10 transition-all cursor-pointer outline-none opacity-70 hover:opacity-100 rounded-lg overflow-hidden appearance-none bg-gray-400"
+          className="w-full h-10 mr-10 overflow-hidden transition-all bg-gray-400 rounded-lg outline-none appearance-none cursor-pointer opacity-70 hover:opacity-100"
         />
-        <p className="self-center text-white text-xl whitespace-nowrap">
+        <p className="self-center text-xl text-white whitespace-nowrap">
           {slider} taxi
         </p>
       </div>
@@ -39,7 +39,7 @@ const MapActionsBanner: FC<IMapActionsBanner> = ({
       </button>
       <button
         onClick={() => switchOfficeSG()}
-        className="mr-10 p-3 text-white bg-gray-500 rounded-md"
+        className="p-3 mr-10 text-white bg-gray-500 rounded-md"
       >
         SG office
       </button>
