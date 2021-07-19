@@ -1,7 +1,7 @@
 import { officeLocation } from "./officeLocation";
 
 //https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-const distanceCalculation = (
+export const distanceCalculation = (
   lat1: number,
   lon1: number,
   lat2: number,

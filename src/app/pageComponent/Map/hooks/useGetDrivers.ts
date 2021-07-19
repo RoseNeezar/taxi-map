@@ -1,7 +1,10 @@
 import { useState, useCallback, useRef } from "react";
 import { useQuery } from "react-query";
 import agent from "../../../api/agent";
-import { nearestOfficeLocation } from "../../../utils/nearestOffice";
+import {
+  distanceCalculation,
+  nearestOfficeLocation,
+} from "../../../utils/nearestOffice";
 import { officeLocation } from "../../../utils/officeLocation";
 import { IFetchDriver } from "../../../utils/type";
 
@@ -77,7 +80,22 @@ export const useGetDrivers = () => {
   );
 
   const selectFn = useCallback(() => {
-    const taxiNum = driverList?.drivers.slice(0, slider).map((re) => re);
+    const sortDistance = driverList?.drivers.sort(
+      (a, b) =>
+        distanceCalculation(
+          Number(currentLocation.lat),
+          Number(currentLocation.lng),
+          a.location.latitude,
+          a.location.longitude
+        ) -
+        distanceCalculation(
+          Number(currentLocation.lat),
+          Number(currentLocation.lng),
+          b.location.latitude,
+          b.location.longitude
+        )
+    );
+    const taxiNum = sortDistance?.slice(0, slider).map((re: any) => re);
     return {
       ...driverList,
       drivers: taxiNum,
