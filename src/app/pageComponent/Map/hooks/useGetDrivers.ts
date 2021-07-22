@@ -6,7 +6,7 @@ import {
   nearestOfficeLocation,
 } from "../../../utils/nearestOffice";
 import { officeLocation } from "../../../utils/officeLocation";
-import { IFetchDriver } from "../../../utils/type";
+import { Driver, IFetchDriver } from "../../../utils/type";
 
 interface ILocation {
   lat: number;
@@ -14,7 +14,7 @@ interface ILocation {
 }
 
 export const useGetDrivers = () => {
-  const [viewport, setViewport] = useState<Partial<ILocation>>({});
+  const [initialCenter, setInitialCenter] = useState<Partial<ILocation>>({});
   const [loadingLocation, setLoadingLocation] = useState(true);
   const [currentLocation, setCurrentLocation] = useState<Partial<ILocation>>(
     {}
@@ -34,6 +34,7 @@ export const useGetDrivers = () => {
       lat: officeLocation[1].latitude,
       lng: officeLocation[1].longitude,
     });
+    console.log(mapRef.current?.getCenter().toJSON());
     refetch();
   }, []);
 
@@ -52,13 +53,39 @@ export const useGetDrivers = () => {
       currentLocation.lat!,
       currentLocation.lng!
     );
-
+    console.log(nearest);
     mapRef.current?.setCenter({
       lat: nearest.latitude,
       lng: nearest.longitude,
     });
     refetch();
   }, []);
+
+  const selectFn = useCallback(
+    (item: IFetchDriver) => {
+      const sortDistance = item?.drivers.sort(
+        (a: Driver, b: Driver) =>
+          distanceCalculation(
+            Number(mapRef.current?.getCenter().toJSON().lat),
+            Number(mapRef.current?.getCenter().toJSON().lng),
+            a.location.latitude,
+            a.location.longitude
+          ) -
+          distanceCalculation(
+            Number(mapRef.current?.getCenter().toJSON().lat),
+            Number(mapRef.current?.getCenter().toJSON().lng),
+            b.location.latitude,
+            b.location.longitude
+          )
+      );
+      const taxiNum = sortDistance?.slice(0, slider).map((re: Driver) => re);
+      return {
+        ...item,
+        drivers: taxiNum,
+      };
+    },
+    [slider]
+  );
 
   const {
     data: driverList,
@@ -75,39 +102,16 @@ export const useGetDrivers = () => {
       }),
     {
       refetchInterval: 10000, //refetch every 10s
-      enabled: !loadingLocation && !!viewport,
+      enabled: !loadingLocation && !!initialCenter,
+      select: selectFn,
     }
   );
 
-  const selectFn = useCallback(() => {
-    const sortDistance = driverList?.drivers.sort(
-      (a, b) =>
-        distanceCalculation(
-          Number(mapRef.current?.getCenter().toJSON().lat),
-          Number(mapRef.current?.getCenter().toJSON().lng),
-          a.location.latitude,
-          a.location.longitude
-        ) -
-        distanceCalculation(
-          Number(mapRef.current?.getCenter().toJSON().lat),
-          Number(mapRef.current?.getCenter().toJSON().lng),
-          b.location.latitude,
-          b.location.longitude
-        )
-    );
-    const taxiNum = sortDistance?.slice(0, slider).map((re) => re);
-    return {
-      ...driverList,
-      drivers: taxiNum,
-    };
-  }, [slider, driverList]);
-
   return {
-    selectFn,
     mapRef,
     onMapLoad,
-    viewport,
-    setViewport,
+    initialCenter,
+    setInitialCenter,
     loadingLocation,
     setLoadingLocation,
     currentLocation,
