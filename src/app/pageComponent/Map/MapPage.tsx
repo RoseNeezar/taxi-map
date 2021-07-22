@@ -24,8 +24,6 @@ const MapPage: FC = () => {
     googleMapsApiKey: String(process.env.NEXT_PUBLIC_GOOGLE_MAPS_TOKEN),
   });
   const {
-    selectFn,
-    mapRef,
     onMapLoad,
     selected,
     setSelected,
@@ -35,12 +33,12 @@ const MapPage: FC = () => {
     driverList,
     isLoading,
     loadingLocation,
-    setViewport,
+    setInitialCenter,
     slider,
     setSlider,
     switcNearestLocation,
     switchOfficeSG,
-    viewport,
+    initialCenter,
     switchOfficeUK,
   } = useGetDrivers();
 
@@ -49,7 +47,8 @@ const MapPage: FC = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         const nearest = nearestOfficeLocation(latitude, longitude);
-        setViewport((prev) => ({
+
+        setInitialCenter((prev) => ({
           ...prev,
           lat: nearest.latitude,
           lng: nearest.longitude,
@@ -59,10 +58,7 @@ const MapPage: FC = () => {
           lat: nearest.latitude,
           lng: nearest.longitude,
         }));
-        mapRef.current?.setCenter({
-          lat: nearest.latitude,
-          lng: nearest.longitude,
-        });
+
         setLoadingLocation(false);
       },
       () => Navigate?.push("/error")
@@ -95,7 +91,7 @@ const MapPage: FC = () => {
         id="map"
         mapContainerStyle={mapContainerStyle}
         zoom={15}
-        center={viewport as ILocation}
+        center={initialCenter as ILocation}
         options={options}
         onLoad={onMapLoad}
       >
@@ -141,7 +137,7 @@ const MapPage: FC = () => {
           }}
         />
         {!isLoading &&
-          selectFn().drivers?.map((res) => (
+          driverList?.drivers?.map((res) => (
             <Marker
               position={{
                 lat: res.location.latitude,

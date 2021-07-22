@@ -5,7 +5,7 @@ import { useGetDrivers } from "../Map/hooks/useGetDrivers";
 import { nearestOfficeLocation } from "../../utils/nearestOffice";
 
 const ErrorPage = () => {
-  const { setViewport, setCurrentLocation, mapRef, setLoadingLocation } =
+  const { setInitialCenter, setCurrentLocation, mapRef, setLoadingLocation } =
     useGetDrivers();
 
   const retryLocation = () => {
@@ -13,7 +13,7 @@ const ErrorPage = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         const nearest = nearestOfficeLocation(latitude, longitude);
-        setViewport((prev) => ({
+        setInitialCenter((prev) => ({
           ...prev,
           lat: nearest.latitude,
           lng: nearest.longitude,
