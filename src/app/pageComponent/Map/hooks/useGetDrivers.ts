@@ -34,7 +34,7 @@ export const useGetDrivers = () => {
       lat: officeLocation[1].latitude,
       lng: officeLocation[1].longitude,
     });
-    console.log(mapRef.current?.getCenter().toJSON());
+
     refetch();
   }, []);
 
@@ -53,7 +53,7 @@ export const useGetDrivers = () => {
       currentLocation.lat!,
       currentLocation.lng!
     );
-    console.log(nearest);
+
     mapRef.current?.setCenter({
       lat: nearest.latitude,
       lng: nearest.longitude,
@@ -97,8 +97,12 @@ export const useGetDrivers = () => {
     async () =>
       await agent.TaxiService.fetchTaxi({
         count: 15,
-        latitude: Number(mapRef.current?.getCenter().toJSON().lat),
-        longitude: Number(mapRef.current?.getCenter().toJSON().lng),
+        latitude:
+          Number(mapRef.current?.getCenter().toJSON().lat) ||
+          initialCenter.lat!,
+        longitude:
+          Number(mapRef.current?.getCenter().toJSON().lng) ||
+          initialCenter.lng!,
       }),
     {
       refetchInterval: 10000, //refetch every 10s

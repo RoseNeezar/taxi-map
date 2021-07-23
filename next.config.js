@@ -21,7 +21,7 @@ module.exports = {
         source: "/api/:any*",
         destination: "/api/:any*",
       },
-      // Rewrite everything else to use `pages/app`
+      // Rewrite everything else to use `pages/index.tsx`
       {
         source: "/:path*",
         destination: "/",
